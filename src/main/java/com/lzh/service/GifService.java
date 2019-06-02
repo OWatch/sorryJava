@@ -59,7 +59,7 @@ public class GifService {
         cfg.setDirectoryForTemplateLoading(Paths.get(tempPath).resolve(subtitles.getTemplateName()).toFile());
         Map<String, Object> root = new HashMap<>();
         Map<String, String> mx = new HashMap<>();
-        List<String> list = Splitter.on(",").splitToList(subtitles.getSentence());
+        List<String> list = Splitter.on("&&&").splitToList(subtitles.getSentence());
         for (int i = 0; i < list.size(); i++) {
             mx.put("sentences" + i, list.get(i));
         }
