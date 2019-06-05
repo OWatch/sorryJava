@@ -1,15 +1,8 @@
 package com.lzh.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.util.List;
-
-/**
- * Created by lizhihao on 2018/3/11.
- */
-@Getter
-@Setter
+@Data
 public class Subtitles {
 
     private String templateName;

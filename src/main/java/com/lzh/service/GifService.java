@@ -6,6 +6,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,10 +26,9 @@ import java.util.UUID;
 @Service
 @Getter
 @Setter
+@Slf4j
 @ConfigurationProperties(prefix = "cache.template")
 public class GifService {
-
-    private static final Logger logger = LoggerFactory.getLogger(GifService.class);
 
     private String tempPath;
 
@@ -41,13 +41,13 @@ public class GifService {
 //            cmd = String.format("ffmpeg -i %s -r 2 -vf ass=%s,scale=250:-1 -f gif - |gifsicle --optimize=3 --delay=20 > %s ", videoPath, assPath, gifPath);
             cmd = String.format("ffmpeg -i %s -r 5 -vf ass=%s,scale=180:-1 -y %s ", videoPath, assPath, gifPath);
         }
-        logger.info("cmd: {}", cmd);
+        log.info("cmd: {}", cmd);
         try {
             Process exec = Runtime.getRuntime().exec(cmd);
             exec.waitFor();
 //            logger.info("输出:{}",IOUtils.toString(exec.getErrorStream()));
         } catch (Exception e) {
-            logger.error("生成gif报错：{}", e);
+            log.error("生成gif报错：{}", e);
         }
         return gifPath;
     }
@@ -68,7 +68,7 @@ public class GifService {
         try (FileWriter writer = new FileWriter(path.toFile())) {
             temp.process(root, writer);
         } catch (Exception e) {
-            logger.error("生成ass文件报错", e);
+            log.error("生成ass文件报错", e);
         }
         return path.toString();
     }
