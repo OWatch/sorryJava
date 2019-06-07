@@ -3,8 +3,6 @@ package com.lzh.controller;
 import com.google.common.collect.Maps;
 import com.lzh.entity.Subtitles;
 import com.lzh.service.GifService;
-import com.lzh.service.QcloudService;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -20,9 +18,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * Created by lizhihao on 2018/3/11.
- */
 @RestController
 @RequestMapping(path = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
 public class GifController {
@@ -30,19 +25,12 @@ public class GifController {
     @Autowired
     GifService gifService;
 
-    @Autowired
-    QcloudService qcloudService;
-
-    @ApiOperation(value = "获取gif", notes = "")
     @RequestMapping(path = "/gif/filePath", method = RequestMethod.POST)
     public Map renderGifPath(@RequestBody Subtitles subtitles){
         ConcurrentMap<String, String> map = Maps.newConcurrentMap();
         try{
             String file = gifService.renderGif(subtitles);
             String filePath = Paths.get(file).getFileName().toString();
-            if ("true".equals(qcloudService.getEnable())) {
-                filePath = qcloudService.upload(file);
-            }
             map.put("code", "0");
             map.put("result", filePath);
         } catch (Exception e) {
@@ -52,7 +40,6 @@ public class GifController {
         return map;
     }
 
-    @ApiOperation(value = "获取gif", notes = "")
     @RequestMapping(path = "/gif/file", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.MULTIPART_FORM_DATA_VALUE}, method = RequestMethod.POST)
     public ResponseEntity<Resource> renderGif(@RequestBody Subtitles subtitles) throws Exception {
         String file = gifService.renderGif(subtitles);
