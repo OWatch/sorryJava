@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.lzh.entity.Subtitles;
 import com.lzh.service.GifService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
