@@ -4,11 +4,13 @@ import com.google.common.collect.Maps;
 import com.lzh.entity.Subtitles;
 import com.lzh.service.GifService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,11 +21,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 @RestController
-@RequestMapping(path = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
+@RequestMapping(path = "/", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 public class GifController {
 
     @Autowired
-    GifService gifService;
+    private GifService gifService;
 
     @RequestMapping(path = "/gif/filePath", method = RequestMethod.POST)
     public Map renderGifPath(@RequestBody Subtitles subtitles){
@@ -40,11 +42,10 @@ public class GifController {
         return map;
     }
 
-    @RequestMapping(path = "/gif/file", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.MULTIPART_FORM_DATA_VALUE}, method = RequestMethod.POST)
-    public ResponseEntity<Resource> renderGif(@RequestBody Subtitles subtitles) throws Exception {
-        String file = gifService.renderGif(subtitles);
-        Resource resource = new FileSystemResource(file);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=txtx.gif").body(resource);
+    @RequestMapping(path = "/{path}", method = RequestMethod.GET)
+    public ResponseEntity<Resource> renderGif(@PathVariable String path) throws Exception {
+        String gifPath = Paths.get("/opt/site/cache/").resolve(path).toString();
+        Resource resource = new FileSystemResource(gifPath);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=txtx.gif").body(resource);
     }
 }
