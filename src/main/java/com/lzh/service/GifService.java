@@ -2,6 +2,8 @@ package com.lzh.service;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.lzh.entity.Subtitles;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -21,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -29,17 +32,16 @@ import java.util.UUID;
 @Slf4j
 @ConfigurationProperties(prefix = "cache.template")
 public class GifService {
-
     private String tempPath;
-
-    private String templateStr;
+    private Map<String, String> TEMPLATE_MAP = new HashMap<>(3);
+    private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry");
 
     @PostConstruct
     private void init() throws Exception {
         loadSorryTemplate();
     }
 
-    public String renderGif(Subtitles subtitles) {
+    public String renderGif(Subtitles subtitles) throws Exception {
         String assPath = renderAss(subtitles);
         String gifPath = Paths.get(tempPath).resolve(UUID.randomUUID() + ".gif").toString();
         String videoPath = Paths.get(tempPath).resolve(subtitles.getTemplateName()+"/template.mp4").toString();
@@ -59,29 +61,35 @@ public class GifService {
         return gifPath;
     }
 
-    private String renderAss(Subtitles subtitles) {
+    private String renderAss(Subtitles subtitles) throws Exception {
         List<String> list = Splitter.on("&&&").splitToList(subtitles.getSentence());
         String targetPath = Paths.get(tempPath).resolve(UUID.randomUUID().toString().replace("-", "") + ".ass").toString();
+        String templateStr = TEMPLATE_MAP.get(subtitles.getTemplateName());
         for (int i = 0; i < list.size(); i++) {
             String srcStr = "<%= sentences[" + i + "] %>";
-            templateStr.replace(srcStr, list.get(i));
+            templateStr = templateStr.replace(srcStr, list.get(i));
         }
+        FileOutputStream fos = new FileOutputStream(targetPath);
+        fos.write(templateStr.getBytes());
+        fos.close();
         return targetPath;
     }
 
     private void loadSorryTemplate()  throws Exception  {
-        String originPath = Paths.get(tempPath).resolve("sorry/template.ass").toString();
-        File file = new File(originPath);
-        FileReader in = new FileReader(file);
-        BufferedReader bufIn = new BufferedReader(in);
-        CharArrayWriter tempStream = new CharArrayWriter();
-        String line = null;
-        while ( (line = bufIn.readLine()) != null) {
-            tempStream.write(line);
-            tempStream.append(System.getProperty("line.separator"));
+        for (String templateName : TEMPLATE_NAME) {
+            String originPath = Paths.get(tempPath).resolve(templateName + "/template.ass").toString();
+            File file = new File(originPath);
+            FileReader in = new FileReader(file);
+            BufferedReader bufIn = new BufferedReader(in);
+            CharArrayWriter tempStream = new CharArrayWriter();
+            String line = null;
+            while ((line = bufIn.readLine()) != null) {
+                tempStream.write(line);
+                tempStream.append(System.getProperty("line.separator"));
+            }
+            bufIn.close();
+            TEMPLATE_MAP.put(templateName, tempStream.toString());
         }
-        bufIn.close();
-        templateStr = tempStream.toString();
     }
 
 
