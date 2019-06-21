@@ -1,18 +1,21 @@
 package com.lzh.service;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Stopwatch;
 import com.lzh.entity.Subtitles;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import java.io.FileWriter;
+import javax.annotation.PostConstruct;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -29,7 +32,14 @@ public class GifService {
 
     private String tempPath;
 
-    public String renderGif(Subtitles subtitles) throws Exception {
+    private String templateStr;
+
+    @PostConstruct
+    private void init() throws Exception {
+        loadSorryTemplate();
+    }
+
+    public String renderGif(Subtitles subtitles) {
         String assPath = renderAss(subtitles);
         String gifPath = Paths.get(tempPath).resolve(UUID.randomUUID() + ".gif").toString();
         String videoPath = Paths.get(tempPath).resolve(subtitles.getTemplateName()+"/template.mp4").toString();
@@ -49,25 +59,29 @@ public class GifService {
         return gifPath;
     }
 
-    private String renderAss(Subtitles subtitles) throws Exception {
-        Path path = Paths.get(tempPath).resolve(UUID.randomUUID().toString().replace("-", "") + ".ass");
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        cfg.setDefaultEncoding("UTF-8");
-        cfg.setDirectoryForTemplateLoading(Paths.get(tempPath).resolve(subtitles.getTemplateName()).toFile());
-        Map<String, Object> root = new HashMap<>();
-        Map<String, String> mx = new HashMap<>();
+    private String renderAss(Subtitles subtitles) {
         List<String> list = Splitter.on("&&&").splitToList(subtitles.getSentence());
+        String targetPath = Paths.get(tempPath).resolve(UUID.randomUUID().toString().replace("-", "") + ".ass").toString();
         for (int i = 0; i < list.size(); i++) {
-            mx.put("sentences" + i, list.get(i));
+            String srcStr = "<%= sentences[" + i + "] %>";
+            templateStr.replace(srcStr, list.get(i));
         }
-        root.put("mx", mx);
-        Template temp = cfg.getTemplate("template.ftl");
-        try (FileWriter writer = new FileWriter(path.toFile())) {
-            temp.process(root, writer);
-        } catch (Exception e) {
-            log.error("生成ass文件报错", e);
+        return targetPath;
+    }
+
+    private void loadSorryTemplate()  throws Exception  {
+        String originPath = Paths.get(tempPath).resolve("sorry/template.ass").toString();
+        File file = new File(originPath);
+        FileReader in = new FileReader(file);
+        BufferedReader bufIn = new BufferedReader(in);
+        CharArrayWriter tempStream = new CharArrayWriter();
+        String line = null;
+        while ( (line = bufIn.readLine()) != null) {
+            tempStream.write(line);
+            tempStream.append(System.getProperty("line.separator"));
         }
-        return path.toString();
+        bufIn.close();
+        templateStr = tempStream.toString();
     }
 
 
