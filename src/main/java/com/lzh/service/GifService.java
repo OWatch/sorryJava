@@ -34,7 +34,7 @@ import java.util.UUID;
 public class GifService {
     private String tempPath;
     private Map<String, String> TEMPLATE_MAP = new HashMap<>(3);
-    private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry");
+    private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian");
 
     @PostConstruct
     private void init() throws Exception {
@@ -48,7 +48,7 @@ public class GifService {
         String cmd = String.format("ffmpeg -i %s -r 6 -vf ass=%s,scale=300:-1 -y %s", videoPath, assPath, gifPath);
         if ("simple".equals(subtitles.getMode())) {
 //            cmd = String.format("ffmpeg -i %s -r 2 -vf ass=%s,scale=250:-1 -f gif - |gifsicle --optimize=3 --delay=20 > %s ", videoPath, assPath, gifPath);
-            cmd = String.format("ffmpeg -i %s -r 5 -vf ass=%s,scale=180:-1 -y %s ", videoPath, assPath, gifPath);
+            cmd = String.format("ffmpeg -i %s -r 5 -vf ass=%s,scale=250:-1 -y %s ", videoPath, assPath, gifPath);
         }
         log.info("cmd: {}", cmd);
         try {
