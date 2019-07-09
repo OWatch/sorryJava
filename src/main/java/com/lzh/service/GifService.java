@@ -1,29 +1,20 @@
 package com.lzh.service;
 
 import com.google.common.base.Splitter;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.lzh.entity.Subtitles;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -33,7 +24,7 @@ import java.util.UUID;
 @ConfigurationProperties(prefix = "cache.template")
 public class GifService {
     private String tempPath;
-    private Map<String, String> TEMPLATE_MAP = new HashMap<>(3);
+    private Map<String, String> TEMPLATE_MAP = new HashMap<>(7);
     private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian", "marmot", "woquandouyao");
 
     @PostConstruct
