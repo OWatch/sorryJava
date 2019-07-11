@@ -25,7 +25,7 @@ import java.util.UUID;
 public class GifService {
     private String tempPath;
     private Map<String, String> TEMPLATE_MAP = new HashMap<>(7);
-    private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian", "marmot", "woquandouyao");
+    private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian", "marmot", "woquandouyao", "heiren");
 
     @PostConstruct
     private void init() throws Exception {
