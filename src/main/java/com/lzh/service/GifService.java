@@ -4,6 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.lzh.entity.Subtitles;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -20,11 +21,13 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @Getter
@@ -35,10 +38,13 @@ public class GifService {
     private String tempPath;
     private Map<String, String> TEMPLATE_MAP = new HashMap<>(3);
     private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian", "marmot", "woquandouyao", "heiren");
+    @Getter
+    private List<String> fileNames = new ArrayList<>();
 
     @PostConstruct
     private void init() throws Exception {
         loadSorryTemplate();
+        loadFileNames();
     }
 
     public String renderGif(Subtitles subtitles) throws Exception {
@@ -89,6 +95,15 @@ public class GifService {
             }
             bufIn.close();
             TEMPLATE_MAP.put(templateName, tempStream.toString());
+        }
+    }
+
+    private void loadFileNames() {
+        String path = "/opt/site/cache/discover";
+        File dir = new File(path);
+        File[] files = dir.listFiles();
+        for (File f : files) {
+            fileNames.add(f.getName());
         }
     }
 
