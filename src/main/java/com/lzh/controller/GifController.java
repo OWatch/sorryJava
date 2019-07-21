@@ -56,8 +56,8 @@ public class GifController {
 
     @RequestMapping(path = "/more", method = RequestMethod.GET)
     public Map discoverGif() throws Exception {
-        Set<Map<String, String>> resSet = new HashSet<>(4);
-        for (int i = 0; i < 4; i++) {
+        Set<Map<String, String>> resSet = new HashSet<>(3);
+        for (int i = 0; i < 3; i++) {
             ConcurrentMap<String, String> map = Maps.newConcurrentMap();
             List<String> fileNames = gifService.getFileNames();
             int size = fileNames.size();
