@@ -47,17 +47,17 @@ public class GifController {
         return map;
     }
 
-    @RequestMapping(path = "/{path}", method = RequestMethod.GET)
-    public ResponseEntity<Resource> renderGif(@PathVariable String path) throws Exception {
-        String gifPath = Paths.get("/opt/site/cache/").resolve(path).toString();
-        Resource resource = new FileSystemResource(gifPath);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=txtx.gif").body(resource);
-    }
+//    @RequestMapping(path = "/{path}", method = RequestMethod.GET)
+//    public ResponseEntity<Resource> renderGif(@PathVariable String path) throws Exception {
+//        String gifPath = Paths.get("/opt/site/cache/").resolve(path).toString();
+//        Resource resource = new FileSystemResource(gifPath);
+//        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=txtx.gif").body(resource);
+//    }
 
-    @RequestMapping(path = "/discover", method = RequestMethod.GET)
+    @RequestMapping(path = "/more", method = RequestMethod.GET)
     public Map discoverGif() throws Exception {
-        Set<Map<String, String>> resSet = new HashSet<>(8);
-        for (int i = 0; i < 8; i++) {
+        Set<Map<String, String>> resSet = new HashSet<>(4);
+        for (int i = 0; i < 4; i++) {
             ConcurrentMap<String, String> map = Maps.newConcurrentMap();
             List<String> fileNames = gifService.getFileNames();
             int size = fileNames.size();
@@ -70,10 +70,10 @@ public class GifController {
         return res;
     }
 
-    @RequestMapping(path = "/discover/{path}", method = RequestMethod.GET)
-    public ResponseEntity<Resource> discoverGifPath(@PathVariable String path) throws Exception {
-        String gifPath = Paths.get("/opt/site/cache/discover").resolve(path).toString();
-        Resource resource = new FileSystemResource(gifPath);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=txtx.gif").body(resource);
-    }
+//    @RequestMapping(path = "/discover/{path}", method = RequestMethod.GET)
+//    public ResponseEntity<Resource> discoverGifPath(@PathVariable String path) throws Exception {
+//        String gifPath = Paths.get("/opt/site/cache/discover").resolve(path).toString();
+//        Resource resource = new FileSystemResource(gifPath);
+//        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=txtx.gif").body(resource);
+//    }
 }
