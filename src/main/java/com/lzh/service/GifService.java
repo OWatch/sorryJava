@@ -30,7 +30,7 @@ public class GifService {
     private Map<String, String> TEMPLATE_MAP = new HashMap<>(7);
     private Map<String, GifItem> MORE_GIF_CONTENT = new HashMap<>();
     private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian", "marmot", "woquandouyao", "heiren",
-    "nihaosaoa");
+    "nihaosaoa", "dongshu");
 
 
     @Getter
@@ -119,17 +119,40 @@ public class GifService {
         nihaosaoaItem.setContent("你好骚啊");
         nihaosaoaItem.setTemplate("nihaosaoa");
 
-
-        GifItem.PlaceHolder placeHolder1 = nihaosaoaItem.new PlaceHolder();
-        placeHolder1.setName("第一句");
-        placeHolder1.setPlaceholder("xx");
-        GifItem.PlaceHolder placeHolder2 = nihaosaoaItem.new PlaceHolder();
-        placeHolder2.setName("第二句");
-        placeHolder2.setPlaceholder("你好骚啊");
-        nihaosaoaItem.getTalks().add(placeHolder1);
-        nihaosaoaItem.getTalks().add(placeHolder2);
+        GifItem.PlaceHolder s_placeHolder1 = nihaosaoaItem.new PlaceHolder();
+        s_placeHolder1.setName("第一句");
+        s_placeHolder1.setPlaceholder("xx");
+        GifItem.PlaceHolder s_placeHolder2 = nihaosaoaItem.new PlaceHolder();
+        s_placeHolder2.setName("第二句");
+        s_placeHolder2.setPlaceholder("你好骚啊");
+        nihaosaoaItem.getTalks().add(s_placeHolder1);
+        nihaosaoaItem.getTalks().add(s_placeHolder2);
 
         MORE_GIF_CONTENT.put("nihaosaoa", nihaosaoaItem);
+
+        GifItem dongshu = new GifItem();
+        dongshu.setImageUrl(HOST + "/dongshu/sample.gif");
+        dongshu.setContent("东叔不喜欢");
+        dongshu.setTemplate("dongshu");
+
+        GifItem.PlaceHolder d_ph1 = dongshu.new PlaceHolder();
+        d_ph1.setName("第一句");
+        d_ph1.setPlaceholder("你能给东叔打这个电话");
+        GifItem.PlaceHolder d_ph2 = dongshu.new PlaceHolder();
+        d_ph2.setName("第二句");
+        d_ph2.setPlaceholder("东叔很高兴");
+        GifItem.PlaceHolder d_ph3 = dongshu.new PlaceHolder();
+        d_ph3.setName("第三句");
+        d_ph3.setPlaceholder("但是你刚才说话的语气");
+        GifItem.PlaceHolder d_ph4 = dongshu.new PlaceHolder();
+        d_ph4.setName("第四句");
+        d_ph4.setPlaceholder("东叔不喜欢");
+        dongshu.getTalks().add(d_ph1);
+        dongshu.getTalks().add(d_ph2);
+        dongshu.getTalks().add(d_ph3);
+        dongshu.getTalks().add(d_ph4);
+
+        MORE_GIF_CONTENT.put("dongshu", dongshu);
     }
 
 }
