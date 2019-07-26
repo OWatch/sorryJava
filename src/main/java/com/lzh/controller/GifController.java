@@ -1,14 +1,11 @@
 package com.lzh.controller;
 
 import com.google.common.collect.Maps;
+import com.lzh.entity.GifItem;
 import com.lzh.entity.Subtitles;
 import com.lzh.service.GifService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +41,11 @@ public class GifController {
             map.put("result", e.getMessage());
         }
         return map;
+    }
+
+    @RequestMapping(path = "/moreGif/{page}", method = RequestMethod.GET)
+    public List<GifItem> moreGif(@PathVariable int page) throws Exception {
+        return gifService.moreGif(page);
     }
 
 //    @RequestMapping(path = "/{path}", method = RequestMethod.GET)

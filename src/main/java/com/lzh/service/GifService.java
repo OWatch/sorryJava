@@ -2,6 +2,7 @@ package com.lzh.service;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.lzh.entity.GifItem;
 import com.lzh.entity.Subtitles;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,8 +26,13 @@ import java.util.UUID;
 @ConfigurationProperties(prefix = "cache.template")
 public class GifService {
     private String tempPath;
+    private String HOST = "https://xcx.ps502.top";
     private Map<String, String> TEMPLATE_MAP = new HashMap<>(7);
-    private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian", "marmot", "woquandouyao", "heiren");
+    private Map<String, GifItem> MORE_GIF_CONTENT = new HashMap<>();
+    private final List<String> TEMPLATE_NAME = ImmutableList.of("wangjingze", "sorry", "kongming", "yalidaye", "zengxiaoxian", "marmot", "woquandouyao", "heiren",
+    "nihaosaoa");
+
+
     @Getter
     private List<String> fileNames = new ArrayList<>();
 
@@ -35,6 +41,7 @@ public class GifService {
     private void init() throws Exception {
         loadSorryTemplate();
         loadFileNames();
+        loadMoreGifContent();
     }
 
     public String renderGif(Subtitles subtitles) throws Exception {
@@ -71,6 +78,15 @@ public class GifService {
         return targetPath;
     }
 
+    public List<GifItem> moreGif(int page) {
+        List<GifItem> res = new ArrayList<>();
+        for (int i = 8 + page * 8; i < TEMPLATE_NAME.size(); i++) {
+            GifItem item = MORE_GIF_CONTENT.get(TEMPLATE_NAME.get(i));
+            res.add(item);
+        }
+        return res;
+    }
+
     private void loadSorryTemplate()  throws Exception  {
         for (String templateName : TEMPLATE_NAME) {
             String originPath = Paths.get(tempPath).resolve(templateName + "/template.ass").toString();
@@ -97,5 +113,23 @@ public class GifService {
         }
     }
 
+    private void loadMoreGifContent() {
+        GifItem nihaosaoaItem = new GifItem();
+        nihaosaoaItem.setImageUrl(HOST + "/nihaosaoa/sample.gif");
+        nihaosaoaItem.setContent("你好骚啊");
+        nihaosaoaItem.setTemplate("nihaosaoa");
+
+
+        GifItem.PlaceHolder placeHolder1 = nihaosaoaItem.new PlaceHolder();
+        placeHolder1.setName("第一句");
+        placeHolder1.setPlaceholder("xx");
+        GifItem.PlaceHolder placeHolder2 = nihaosaoaItem.new PlaceHolder();
+        placeHolder2.setName("第二句");
+        placeHolder2.setPlaceholder("你好骚啊");
+        nihaosaoaItem.getTalks().add(placeHolder1);
+        nihaosaoaItem.getTalks().add(placeHolder2);
+
+        MORE_GIF_CONTENT.put("nihaosaoa", nihaosaoaItem);
+    }
 
 }
